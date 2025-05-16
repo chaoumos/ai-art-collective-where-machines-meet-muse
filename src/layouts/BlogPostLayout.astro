@@ -1,0 +1,51 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { Image } from 'astro:assets';
+
+export interface Props {
+	frontmatter: {
+		title: string;
+		description: string;
+		pubDate: string;
+		author: string;
+		image?: any; // Using 'any' for image type, consider a more specific type
+	};
+}
+
+const { frontmatter } = Astro.props;
+const { title, description, pubDate, author, image } = frontmatter;
+
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'day',
+});
+
+const projectTitle = "AI Art Collective: Where Machines Meet Muse";
+const blogName = "ai-art-collective";
+---
+
+<BaseLayout title={title} description={description}>
+	<div class="mx-auto max-w-3xl py-8 px-4 sm:px-6 lg:px-8">
+		<article class="prose prose-lg dark:prose-invert mx-auto">
+			<header>
+				<h1 class="text-3xl font-semibold mb-4">{title}</h1>
+				<div class="text-gray-500 dark:text-gray-400 mb-4">
+					Published on <time datetime={pubDate}>{formattedDate}</time> by {author}
+				</div>
+				{image && (
+					<div class="mb-6">
+						<Image
+							src={image}
+							alt={title}
+							class="rounded-lg shadow-md w-full h-auto"
+							widths={[400, 700, 1000]}
+							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 75vw, 1000px"
+						/>
+					</div>
+				)}
+			</header>
+			<slot />
+		</article>
+	</div>
+</BaseLayout>
